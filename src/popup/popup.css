@@ -11,11 +11,13 @@ body {
 }
 
 main {
+  display: grid;
+  gap: 8px;
   padding: 16px;
 }
 
 h1 {
-  margin: 0 0 8px;
+  margin: 0;
   font-size: 16px;
 }
 
@@ -23,4 +25,20 @@ p {
   margin: 0;
   font-size: 13px;
   line-height: 1.4;
+}
+
+button {
+  border: 0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: #0f766e;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+#options {
+  background: #fff;
+  color: #0f766e;
+  border: 1px solid #0f766e;
 }

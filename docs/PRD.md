@@ -1,44 +1,50 @@
 # PRD — InHire Autofill
 
-Status: rascunho. Escopo de produto ainda não definido.
-
-Extensão Chrome (Manifest V3) para a Chrome Web Store. Este arquivo é a fonte do que a extensão faz. Código novo só entra depois de registrado aqui.
+Status: V0 aceito para uso local no Chrome.
 
 ## Problema
 
-A definir.
+A candidatura em `*.inhire.app` repete a etapa Information em todas as vagas.
 
 ## Usuário
 
-A definir.
+Quem se candidata no próprio Chrome e quer preencher esses campos com um clique.
 
 ## Objetivo
 
-A definir.
+Guardar um perfil neste navegador e preencher a etapa Information quando a pessoa pedir.
 
-## Fora de escopo
+## V0
 
-- Servidor, conta e sincronização na nuvem, até o PRD pedir.
-- Permissão, content script ou host permission sem requisito neste arquivo.
+Entra: nome, e-mail, LinkedIn, telefone, país do telefone, país, cidade, pretensão salarial e tipo de contrato (CLT ou PJ).
 
-## Requisitos
+Há dois disparos, para comparar: botão flutuante na página e botão no popup.
 
-Nenhum requisito de produto ainda. A extensão abre um popup informando que a estrutura está pronta.
+País e país do telefone são o código de duas letras, por exemplo `BR`. A cidade é o nome, por exemplo `São Paulo`. No Brasil a página troca a cidade por uma lista. A pretensão é o texto como deve aparecer, por exemplo `R$ 15.000,00`.
+
+## Fora do V0
+
+- Etapa Diversity, aceite da privacidade e envio do formulário.
+- Currículo e reCAPTCHA.
+- Conta, servidor e outros computadores.
+- Publicação na Chrome Web Store.
 
 ## Critérios de aceite
 
-- [x] Carrega sem compactação em `chrome://extensions`.
-- [x] Manifest V3, sem permissão antecipada.
-- [ ] Comportamento de produto descrito e aceito neste PRD.
+- [x] O perfil fica em `chrome.storage.local`.
+- [x] O preenchimento só começa no clique.
+- [x] Só entram os campos da etapa Information.
+- [ ] A pessoa confere os dois botões numa vaga real do InHire.
 
 ## Decisões
 
 | Data | Decisão |
 | --- | --- |
-| 2026-09-24 | Começar só com a estrutura. Comportamento fica para um PRD seguinte. |
+| 2026-09-24 | V0 só na etapa Information, com salário e contrato, os dois botões, só neste Chrome. |
 
 ## Histórico
 
 | Data | Mudança |
 | --- | --- |
-| 2026-09-24 | PRD inicial, sem escopo de produto. |
+| 2026-09-24 | PRD inicial, sem escopo. |
+| 2026-09-24 | Escopo do V0 definido e implementado. |
