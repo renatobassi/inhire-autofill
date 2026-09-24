@@ -1,0 +1,12 @@
+---
+description: Padrões Manifest V3 da extensão Chrome
+globs: manifest.json,src/**/*
+alwaysApply: false
+---
+
+# Extensão
+
+- Manifest V3. Script só em arquivo; sem script inline.
+- Sem `permissions`, `host_permissions` ou `content_scripts` até `docs/PRD.md` exigir.
+- Sem bundler e sem dependência até precisar.
+- Dados locais em `chrome.storage`. Sem rede até o PRD pedir.

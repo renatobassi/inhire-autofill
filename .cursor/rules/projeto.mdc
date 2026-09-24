@@ -1,0 +1,13 @@
+---
+description: Branch, PRD e economia de tokens neste repositório
+alwaysApply: true
+---
+
+# Projeto
+
+Fonte de produto: `docs/PRD.md` e `docs/BACKLOG.md`. Não inventar escopo.
+
+- Trabalho novo ou correção: branch a partir da `main` (`feat/`, `fix/`, `docs/`, `chore/`). Sem commit direto na `main`.
+- No PR para a `main`: atualizar o PRD se o comportamento mudou; em `docs/BACKLOG.md`, fechar o que o PR resolve e não deixar pendência desta entrega aberta.
+- Ler só os arquivos da tarefa. Não criar arquivo, dependência ou permissão sem requisito no PRD.
+- Diff e resposta curtos.
