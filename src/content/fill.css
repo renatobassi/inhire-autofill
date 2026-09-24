@@ -1,0 +1,36 @@
+#inhire-autofill {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2147483646;
+  display: grid;
+  gap: 6px;
+  width: 180px;
+  font-family: system-ui, sans-serif;
+}
+
+#inhire-autofill-button {
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: #0f766e;
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+#inhire-autofill-status {
+  margin: 0;
+  padding: 8px;
+  border-radius: 8px;
+  background: #fff;
+  color: #14221f;
+  font-size: 12px;
+  line-height: 1.3;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 16%);
+}
+
+#inhire-autofill-status:empty {
+  display: none;
+}

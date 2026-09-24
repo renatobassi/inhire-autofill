@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Perfil — InHire Autofill</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Perfil</h1>
+      <p>Usado só na etapa Information. Os dados ficam neste Chrome.</p>
+      <form id="profile">
+        <label>Nome completo <input name="name" autocomplete="name" /></label>
+        <label>E-mail <input name="email" type="email" autocomplete="email" /></label>
+        <label>LinkedIn <input name="linkedin" placeholder="https://linkedin.com/in/seu-perfil" /></label>
+        <label>Telefone <input name="phone" autocomplete="tel" placeholder="11999998888" /></label>
+        <label>País do telefone <input name="phoneCountry" value="BR" maxlength="2" /></label>
+        <label>País <input name="country" value="BR" maxlength="2" /></label>
+        <label>Cidade <input name="city" autocomplete="address-level2" placeholder="São Paulo" /></label>
+        <label>Pretensão salarial <input name="salary" placeholder="R$ 15.000,00" /></label>
+        <fieldset>
+          <legend>Tipo de contrato</legend>
+          <label><input type="radio" name="contractType" value="CLT" /> CLT</label>
+          <label><input type="radio" name="contractType" value="PJ" /> PJ</label>
+        </fieldset>
+        <button type="submit">Salvar</button>
+        <p id="status" role="status"></p>
+      </form>
+    </main>
+    <script src="options.js"></script>
+  </body>
+</html>
