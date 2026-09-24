@@ -79,6 +79,25 @@ async function selectDropdown(fieldName, wanted) {
   return hidden.value ? "filled" : "missing";
 }
 
+function formatCpf(raw) {
+  const digits = (raw || "").replace(/\D/g, "").slice(0, 11);
+  if (!digits) return "";
+  return digits
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+}
+
+function formatSalary(raw) {
+  const cleaned = (raw || "").replace(/[^\d,]/g, "");
+  if (!cleaned) return "";
+  const comma = cleaned.indexOf(",");
+  const reais = (comma === -1 ? cleaned : cleaned.slice(0, comma)).replace(/^0+(?=\d)/, "") || "0";
+  const cents = ((comma === -1 ? "" : cleaned.slice(comma + 1)) + "00").slice(0, 2);
+  const grouped = reais.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return `R$ ${grouped},${cents}`;
+}
+
 function fillText(selector, value) {
   const text = (value || "").trim();
   if (!text) return "skip";
@@ -113,13 +132,12 @@ async function fillCity(city) {
 async function fillInformation(profile) {
   const results = {
     name: fillText("#name", profile.name),
+    cpf: fillText("input[name='document.value']", formatCpf(profile.cpf)),
     email: fillText("#email", profile.email),
     linkedin: fillText("#linkedinUsername", profile.linkedin),
-    phoneCountry: await selectDropdown("phoneCountry", { code: profile.phoneCountry }),
     phone: fillText("#phone", profile.phone),
-    country: await selectDropdown("country", { code: profile.country }),
     city: await fillCity(profile.city),
-    salary: fillText("#salaryExpectation", profile.salary),
+    salary: fillText("#salaryExpectation", formatSalary(profile.salary)),
     contractType: fillContract(profile.contractType)
   };
   document.body.click();
