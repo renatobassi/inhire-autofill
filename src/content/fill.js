@@ -107,6 +107,31 @@ function fillText(selector, value) {
   return input.value ? "filled" : "missing";
 }
 
+function resumeFile(profile) {
+  if (!profile.resumeData || !profile.resumeName) return null;
+  const binary = atob(profile.resumeData);
+  const bytes = new Uint8Array(binary.length);
+  for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
+  return new File([bytes], profile.resumeName, { type: profile.resumeType || "application/pdf" });
+}
+
+async function fillResume(profile) {
+  const file = resumeFile(profile);
+  if (!file) return "skip";
+  const input = document.querySelector("input[type='file'][name='resume']");
+  if (!input) return "missing";
+  const transfer = new DataTransfer();
+  transfer.items.add(file);
+  input.files = transfer.files;
+  input.dispatchEvent(new Event("change", { bubbles: true }));
+  const needle = file.name.length > 25 ? file.name.slice(0, 16) : file.name;
+  for (let attempt = 0; attempt < 24; attempt += 1) {
+    await wait(250);
+    if (document.body.innerText.includes(needle)) return "filled";
+  }
+  return "missing";
+}
+
 function fillContract(value) {
   const contract = (value || "").trim();
   if (!contract) return "skip";
@@ -137,6 +162,7 @@ async function fillInformation(profile) {
     linkedin: fillText("#linkedinUsername", profile.linkedin),
     phone: fillText("#phone", profile.phone),
     city: await fillCity(profile.city),
+    resume: await fillResume(profile),
     salary: fillText("#salaryExpectation", formatSalary(profile.salary)),
     contractType: fillContract(profile.contractType)
   };
