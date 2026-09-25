@@ -75,6 +75,27 @@ button {
   border: 1px solid #0f766e;
 }
 
+.consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.consent input {
+  margin-top: 2px;
+}
+
+.privacy {
+  margin: 0;
+  font-size: 13px;
+}
+
+.privacy a {
+  color: #0f766e;
+}
+
 #status {
   min-height: 1.2em;
   margin: 0;

@@ -125,6 +125,7 @@ form.addEventListener("submit", async (event) => {
   form.elements.salary.value = formatSalary(form.elements.salary.value, true);
   const profile = Object.fromEntries(new FormData(form));
   delete profile.resume;
+  delete profile.consent;
   const picked = form.elements.resume.files[0];
   if (picked) {
     profile.resumeName = picked.name;

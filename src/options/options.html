@@ -25,8 +25,13 @@
           <label><input type="radio" name="contractType" value="CLT" /> CLT</label>
           <label><input type="radio" name="contractType" value="PJ" /> PJ</label>
         </fieldset>
+        <label class="consent">
+          <input name="consent" type="checkbox" required />
+          <span>Salvo neste Chrome, só para preencher a etapa Information no InHire. Nada disso é enviado a um servidor.</span>
+        </label>
         <button type="submit">Salvar</button>
         <p id="status" role="status"></p>
+        <p class="privacy"><a href="../../privacy.html">Política de privacidade</a></p>
       </form>
     </main>
     <script src="options.js"></script>
