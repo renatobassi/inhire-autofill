@@ -1,4 +1,5 @@
 .DS_Store
 Thumbs.db
 *.zip
-dist/
+dist/*
+!dist/inhire-autofill-0.2.1.zip

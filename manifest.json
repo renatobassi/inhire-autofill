@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "InHire Autofill",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Preenche a etapa Information das vagas em inhire.app com o perfil salvo no Chrome.",
   "permissions": ["storage"],
   "action": {
@@ -15,6 +15,12 @@
   },
   "options_page": "src/options/options.html",
   "content_scripts": [
+    {
+      "matches": ["https://*.inhire.app/*"],
+      "js": ["src/content/page.js"],
+      "world": "MAIN",
+      "run_at": "document_start"
+    },
     {
       "matches": ["https://*.inhire.app/*"],
       "js": ["src/content/fill.js"],

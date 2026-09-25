@@ -74,6 +74,8 @@ function applyProfile(profile) {
     if (field instanceof RadioNodeList) {
       const match = [...field].find((item) => item.value === value);
       if (match) match.checked = true;
+    } else if (field.type === "checkbox") {
+      field.checked = value === "on";
     } else {
       field.value = value;
     }
