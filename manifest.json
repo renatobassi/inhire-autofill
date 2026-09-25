@@ -17,6 +17,12 @@
   "content_scripts": [
     {
       "matches": ["https://*.inhire.app/*"],
+      "js": ["src/content/page.js"],
+      "world": "MAIN",
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["https://*.inhire.app/*"],
       "js": ["src/content/fill.js"],
       "css": ["src/content/fill.css"]
     }
