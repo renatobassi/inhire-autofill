@@ -52,7 +52,8 @@ O país de origem é o código, por exemplo `BR`. O preenchimento só escolhe es
 | 2026-09-24 | Escopo do V0 definido e implementado. |
 | 2026-09-24 | CPF no perfil e máscara de pretensão salarial no cadastro. |
 | 2026-09-24 | País e país do telefone saem do perfil. A vaga já abre com eles. |
+| 2026-09-24 | Currículo PDF ou DOCX entra no perfil e vai no anexo da vaga. |
 | 2026-09-25 | País de origem volta, porque algumas vagas abrem o campo vazio. O aviso deixa de listar o que não foi achado. |
 | 2026-09-25 | A etapa Diversity passa a ser preenchida com os grupos e a candidatura como pessoa com deficiência. |
 | 2026-09-25 | A cidade do Brasil é escolhida na lista que abre depois do país. |
-| 2026-09-25 | O anexo do currículo volta ao perfil e à etapa Information. |
+| 2026-09-25 | O currículo salvo é entregue ao anexo da própria página. |
