@@ -11,6 +11,8 @@ Cada correção ou funcionalidade sai de uma branch nova, a partir da `main` atu
 
 Não há commit direto na `main`.
 
+O modelo do pull request está em `.github/pull_request_template.md`.
+
 ## Antes do PR para a main
 
 1. Atualizar `docs/PRD.md` se o comportamento mudou.
