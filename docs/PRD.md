@@ -18,12 +18,12 @@ O país de origem é o código, por exemplo `BR`. O preenchimento só escolhe es
 
 O cadastro só grava o perfil depois que a pessoa marca que ele fica neste Chrome e não é enviado a um servidor. A página de opções aponta para `privacy.html`.
 
-### Fora do V0
+## Fora do V0
 
 - Aceite da privacidade da vaga e envio do formulário.
 - reCAPTCHA. A página pode pedi-lo ao receber o currículo.
 - Conta, servidor e outros computadores.
-- Publicação na Chrome Web Store.
+- Publicação na Chrome Web Store. O print da ficha está em `store/screenshot-como-funciona.jpg`. A política em `privacy.html` ainda precisa de um endereço público, no site da Jeditech.
 
 ## Stakeholders
 
@@ -88,8 +88,8 @@ O V0 foi definido e implementado em 24 e 25 de setembro de 2026. O detalhe está
 | Data | Decisão |
 | --- | --- |
 | 2026-09-24 | V0 só na etapa Information, com salário e contrato, os dois botões, só neste Chrome. |
+| 2026-09-24 | O perfil só é salvo com a confirmação de que fica neste Chrome. A política pública fica em `privacy.html`. |
 | 2026-09-25 | País de origem volta ao perfil. Só é preenchido se a vaga deixar o campo vazio. O aviso mostra só a quantidade. |
-| 2026-09-25 | O perfil só é salvo com a confirmação de que fica neste Chrome. A política pública fica em `privacy.html`. |
 | 2026-09-25 | Diversity entra no perfil. O aceite da privacidade e o envio continuam de fora. |
 
 ## Histórico
@@ -101,6 +101,7 @@ O V0 foi definido e implementado em 24 e 25 de setembro de 2026. O detalhe está
 | 2026-09-24 | CPF no perfil e máscara de pretensão salarial no cadastro. |
 | 2026-09-24 | País e país do telefone saem do perfil. A vaga já abre com eles. |
 | 2026-09-24 | Currículo PDF ou DOCX entra no perfil e vai no anexo da vaga. |
+| 2026-09-24 | Confirmação no cadastro e política de privacidade em `privacy.html`. |
 | 2026-09-25 | País de origem volta, porque algumas vagas abrem o campo vazio. O aviso deixa de listar o que não foi achado. |
 | 2026-09-25 | A etapa Diversity passa a ser preenchida com os grupos e a candidatura como pessoa com deficiência. |
 | 2026-09-25 | A cidade do Brasil é escolhida na lista que abre depois do país. |

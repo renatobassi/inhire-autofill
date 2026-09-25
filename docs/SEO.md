@@ -24,4 +24,4 @@ Quando `privacy.html` estiver no site da Jeditech:
 
 ## Chrome Web Store
 
-A loja não usa este checklist. A ficha ainda não está no ar; o backlog é quem marca essa pendência. A descrição do manifesto acompanha o escopo: Information e Diversity, perfil neste Chrome.
+A loja não usa este checklist. A ficha ainda não está no ar. O print de 1280×800 está em `store/screenshot-como-funciona.jpg`, e o backlog marca a hospedagem de `privacy.html`. A descrição do manifesto acompanha o escopo: Information e Diversity, perfil neste Chrome.

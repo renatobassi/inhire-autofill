@@ -26,7 +26,13 @@ Quem se candidata no próprio Chrome e repete os mesmos campos em cada vaga do I
 
 ## Privacidade
 
-O perfil fica em `chrome.storage.local`. A extensão não envia esses dados a um servidor. O texto público está em [privacy.html](privacy.html).
+O perfil fica em `chrome.storage.local`. A extensão não envia esses dados a um servidor. O cadastro só salva depois da confirmação de que nada é enviado a um servidor. O texto público está em [privacy.html](privacy.html).
+
+## Chrome Web Store
+
+Ainda não publicada. O print de 1280×800 está em [store/screenshot-como-funciona.jpg](store/screenshot-como-funciona.jpg). O texto da política está em [privacy.html](privacy.html) e vai para o site da Jeditech.
+
+![Cadastro do perfil e o preenchimento na vaga](store/screenshot-como-funciona.jpg)
 
 ## Documentação
 
@@ -43,5 +49,3 @@ O perfil fica em `chrome.storage.local`. A extensão não envia esses dados a um
 Não há commit direto na `main`. O fluxo está em [docs/WORKFLOW.md](docs/WORKFLOW.md).
 
 Não há licença open source publicada. Até existir um arquivo `LICENSE`, o código permanece com todos os direitos reservados.
-
-A ficha da loja ainda não está no ar.
