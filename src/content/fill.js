@@ -28,23 +28,28 @@ function readOptions(dropdown) {
   return [];
 }
 
-function findOption(options, { code, label }) {
+function findOption(options, { code, label, labels }) {
   if (code) {
     const wanted = code.toUpperCase();
     const byCode = options.find((item) => String(item.value).toUpperCase() === wanted);
     if (byCode) return byCode;
   }
+  const queries = (labels || [label]).map((item) => (item || "").trim().toLowerCase()).filter(Boolean);
+  for (const query of queries) {
+    const matches = options.filter((item) => String(item.label).toLowerCase().startsWith(query));
+    matches.sort((left, right) => String(left.label).length - String(right.label).length);
+    if (matches[0]) return matches[0];
+  }
   const query = (label || "").trim().toLowerCase();
-  if (!query) return null;
-  const matches = options.filter((item) => String(item.label).toLowerCase().startsWith(query));
-  matches.sort((left, right) => String(left.label).length - String(right.label).length);
-  return matches[0] || options.find((item) => String(item.label).toLowerCase().includes(query)) || null;
+  if (!query || labels) return null;
+  return options.find((item) => String(item.label).toLowerCase().includes(query)) || null;
 }
 
 async function selectDropdown(fieldName, wanted) {
   const code = (wanted.code || "").trim();
   const label = (wanted.label || "").trim();
-  if (!code && !label) return "skip";
+  const labels = wanted.labels || [];
+  if (!code && !label && !labels.length) return "skip";
   const hidden = document.querySelector(`input[name="${fieldName}"]`);
   const dropdown = hidden?.closest("[aria-label='Dropdown select']");
   if (!dropdown) return "missing";
@@ -55,24 +60,37 @@ async function selectDropdown(fieldName, wanted) {
   dropdown.click();
 
   let options = [];
-  for (let attempt = 0; attempt < 12 && !options.length; attempt += 1) {
+  for (let attempt = 0; attempt < 20 && !options.length; attempt += 1) {
     options = readOptions(dropdown);
     if (!options.length) await wait(200);
   }
 
-  const option = findOption(options, { code, label });
-  const search = document.querySelector("[data-component-name='DropdownOptionsSearch'] input");
-  if (search) {
-    const query = String(option?.label || label || code).split(" +")[0].trim();
-    setInputValue(search, query);
-    await wait(350);
+  const option = findOption(options, { code, label, labels: wanted.labels });
+  const query = (label || String(option?.label || labels[0] || code)).split(" +")[0].trim();
+  let search = null;
+  for (let attempt = 0; attempt < 15 && !search; attempt += 1) {
+    const inputs = [...document.querySelectorAll("[data-component-name='DropdownOptionsSearch'] input")];
+    search = inputs.find((input) => input.getClientRects().length) || null;
+    if (!search) await wait(100);
   }
+  if (search && query) setInputValue(search, query);
 
-  const button = [...document.querySelectorAll("[data-component-name='DropdownOption']")].find((item) => {
-    const value = item.getAttribute("data-option-value") || "";
-    if (option) return value === String(option.value);
-    return value.toUpperCase() === code.toUpperCase();
-  });
+  let button = null;
+  for (let attempt = 0; attempt < 12 && !button; attempt += 1) {
+    await wait(150);
+    const buttons = [...document.querySelectorAll("[data-component-name='DropdownOption']")];
+    if (option) {
+      button = buttons.find((item) => (item.getAttribute("data-option-value") || "") === String(option.value)) || null;
+    }
+    if (!button && code) {
+      button = buttons.find((item) => (item.getAttribute("data-option-value") || "").toUpperCase() === code.toUpperCase()) || null;
+    }
+    if (!button && query) {
+      const matches = buttons.filter((item) => item.innerText.trim().toLowerCase().startsWith(query.toLowerCase()));
+      matches.sort((left, right) => left.innerText.length - right.innerText.length);
+      button = matches[0] || null;
+    }
+  }
   if (!button) return "missing";
   button.click();
   await wait(150);
@@ -107,6 +125,55 @@ function fillText(selector, value) {
   return input.value ? "filled" : "missing";
 }
 
+function resumeBytes(profile) {
+  if (!profile.resumeData || !profile.resumeName) return null;
+  const binary = atob(profile.resumeData);
+  const bytes = new Uint8Array(binary.length);
+  for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
+  return {
+    name: profile.resumeName,
+    mime: profile.resumeType || "application/pdf",
+    bytes
+  };
+}
+
+function attachResume(file) {
+  return new Promise((resolve) => {
+    const timer = setTimeout(() => {
+      window.removeEventListener("message", onMessage);
+      resolve(false);
+    }, 2000);
+    function onMessage(event) {
+      if (event.source !== window || event.data?.type !== "inhire-autofill-resume-done") return;
+      clearTimeout(timer);
+      window.removeEventListener("message", onMessage);
+      resolve(event.data.ok === true);
+    }
+    window.addEventListener("message", onMessage);
+    window.postMessage({
+      type: "inhire-autofill-resume",
+      name: file.name,
+      mime: file.mime,
+      bytes: file.bytes
+    }, "*");
+  });
+}
+
+async function fillResume(profile) {
+  const file = resumeBytes(profile);
+  if (!file) return "skip";
+  const input = document.querySelector("input[type='file'][name='resume']");
+  if (!input) return "missing";
+  const attached = await attachResume(file);
+  if (!attached) return "missing";
+  const needle = file.name.length > 25 ? file.name.slice(0, 16) : file.name;
+  for (let attempt = 0; attempt < 24; attempt += 1) {
+    await wait(250);
+    if (document.body.innerText.includes(needle)) return "filled";
+  }
+  return "missing";
+}
+
 function fillContract(value) {
   const contract = (value || "").trim();
   if (!contract) return "skip";
@@ -116,40 +183,103 @@ function fillContract(value) {
   return radio.checked ? "filled" : "missing";
 }
 
+async function fillCountry(code) {
+  const wanted = (code || "BR").trim().toUpperCase();
+  if (!wanted) return "skip";
+  const hidden = document.querySelector("input[name='country']");
+  if (!hidden) return "missing";
+  if (hidden.value.trim()) return "skip";
+  return selectDropdown("country", { code: wanted });
+}
+
 async function fillCity(city) {
   const text = (city || "").trim();
   if (!text) return "skip";
+  const country = document.querySelector("input[name='country']")?.value || "";
+  const inBrazil = /\(BR\)|brasil|brazil/i.test(country);
   let dropdown = null;
-  for (let attempt = 0; attempt < 8; attempt += 1) {
+  for (let attempt = 0; attempt < (inBrazil ? 20 : 8); attempt += 1) {
     dropdown = document.querySelector("input[name='districtBr']");
     if (dropdown) break;
-    await wait(150);
+    await wait(200);
   }
   if (dropdown) return selectDropdown("districtBr", { label: text });
+  if (inBrazil) return "missing";
   return fillText("#district, input[name='district']", text);
 }
 
+const DIVERSITY_MARKS = [
+  ["diversityBlack", ["black person", "pessoa negra", "pessoa preta", "persona negra"]],
+  ["diversityBrown", ["brown person", "pessoa parda", "persona parda"]],
+  ["diversityIndigenous", ["indigenous", "indígena", "indigena"]],
+  ["diversityWoman", ["woman", "mulher", "mujer"]],
+  ["diversityDisability", ["disabilit", "deficiên", "deficien", "discapacidad"]],
+  ["diversityLgbt", ["lgbti", "lgbt"]],
+  ["diversityNone", ["don't belong", "do not belong", "nenhum dos grupos", "nenhum grupo", "não perten", "nao perten", "no pertenezco"]],
+  ["diversitySkip", ["rather not", "prefiro não", "prefiro nao", "prefiero no"]]
+];
+
+function diversityMarks(profile) {
+  const chosen = DIVERSITY_MARKS.filter(([key]) => profile[key] === "on").map(([key]) => key);
+  if (chosen.includes("diversitySkip")) return ["diversitySkip"];
+  if (chosen.includes("diversityNone")) return ["diversityNone"];
+  return chosen;
+}
+
+function fillDiversityGroups(marks) {
+  const form = document.querySelector("[data-component-name='DiversityForm']");
+  if (!form) return "missing";
+  const boxes = [...form.querySelectorAll("input[type='checkbox']")].filter((el) => el.name !== "privacyPolicy");
+  let missed = false;
+  for (const mark of marks) {
+    const tokens = DIVERSITY_MARKS.find(([key]) => key === mark)[1];
+    const box = boxes.find((el) => {
+      const text = (el.closest("label")?.innerText || "").toLowerCase();
+      return tokens.some((token) => text.includes(token));
+    });
+    if (!box) {
+      missed = true;
+      continue;
+    }
+    if (!box.checked) box.click();
+    if (!box.checked) missed = true;
+  }
+  return missed ? "missing" : "filled";
+}
+
+async function fillDiversityApply(value) {
+  const answer = (value || "").trim();
+  if (!answer) return "skip";
+  const labels = answer === "yes" ? ["Yes", "Sim", "Sí"] : ["No", "Não", "Nao"];
+  return selectDropdown("questionsDiversity.peopleWithDisability", { labels });
+}
+
 async function fillInformation(profile) {
+  const marks = diversityMarks(profile);
   const results = {
     name: fillText("#name", profile.name),
     cpf: fillText("input[name='document.value']", formatCpf(profile.cpf)),
     email: fillText("#email", profile.email),
     linkedin: fillText("#linkedinUsername", profile.linkedin),
     phone: fillText("#phone", profile.phone),
+    country: await fillCountry(profile.country),
     city: await fillCity(profile.city),
+    resume: await fillResume(profile),
     salary: fillText("#salaryExpectation", formatSalary(profile.salary)),
-    contractType: fillContract(profile.contractType)
+    contractType: fillContract(profile.contractType),
+    diversity: marks.length ? fillDiversityGroups(marks) : "skip",
+    diversityApply: await fillDiversityApply(profile.diversityApply)
   };
   document.body.click();
   return results;
 }
 
 function summarize(results) {
-  const filled = Object.entries(results).filter(([, status]) => status === "filled").map(([field]) => field);
-  const missing = Object.entries(results).filter(([, status]) => status === "missing").map(([field]) => field);
-  if (!filled.length && !missing.length) return "Salve o perfil nas opções da extensão.";
-  if (!missing.length) return `Preenchidos: ${filled.length}.`;
-  return `Preenchidos: ${filled.length}. Não achei: ${missing.join(", ")}.`;
+  const statuses = Object.values(results);
+  const filled = statuses.filter((status) => status === "filled").length;
+  const attempted = statuses.some((status) => status === "filled" || status === "missing");
+  if (!attempted) return "Salve o perfil nas opções da extensão.";
+  return `Preenchidos: ${filled}.`;
 }
 
 async function runFill() {
