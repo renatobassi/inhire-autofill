@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "InHire Autofill",
   "version": "0.2.1",
-  "description": "Preenche a etapa Information das vagas em inhire.app com o perfil salvo no Chrome.",
+  "description": "Preenche as etapas Information e Diversity das vagas em inhire.app com o perfil salvo neste Chrome.",
   "permissions": ["storage"],
   "action": {
     "default_popup": "src/popup/popup.html",
