@@ -85,6 +85,7 @@ function applyProfile(profile) {
   savedResume = resumeFromProfile(profile);
   dropResume = false;
   showResume();
+  syncExtras();
 }
 
 bindMask(form.elements.cpf, formatCpf);
@@ -115,7 +116,28 @@ resumeClear.addEventListener("click", () => {
   showResume();
 });
 
+function syncExtras() {
+  document.querySelector("#document-extra").hidden = !form.elements.notBrazilian.checked;
+  document.querySelector("#referral-email").hidden = form.elements.indication.value !== "yes";
+}
+
+document.querySelectorAll("[role='tab']").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    const panelId = tab.getAttribute("aria-controls");
+    document.querySelectorAll("[role='tab']").forEach((item) => {
+      item.setAttribute("aria-selected", String(item === tab));
+    });
+    document.querySelectorAll("[role='tabpanel']").forEach((panel) => {
+      panel.hidden = panel.id !== panelId;
+    });
+  });
+});
+
+form.elements.notBrazilian.addEventListener("change", syncExtras);
+[...form.elements.indication].forEach((radio) => radio.addEventListener("change", syncExtras));
+
 showResume();
+syncExtras();
 
 globalThis.chrome?.storage?.local.get(STORAGE_KEY).then((stored) => {
   applyProfile(stored[STORAGE_KEY] || {});
