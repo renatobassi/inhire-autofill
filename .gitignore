@@ -3,3 +3,5 @@ Thumbs.db
 *.zip
 dist/*
 !dist/inhire-autofill-0.2.1.zip
+.vercel
+.env*
