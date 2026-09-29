@@ -8,40 +8,104 @@
   <body>
     <main>
       <h1>Perfil</h1>
-      <p>Usado nas etapas Information e Diversity. Os dados ficam neste Chrome.</p>
+      <p>Usado nas etapas Informações e Diversidade. Os dados ficam neste Chrome.</p>
       <form id="profile">
-        <label>Nome completo <input name="name" autocomplete="name" /></label>
-        <label>CPF <input name="cpf" inputmode="numeric" placeholder="000.000.000-00" maxlength="14" /></label>
-        <label>E-mail <input name="email" type="email" autocomplete="email" /></label>
-        <label>LinkedIn <input name="linkedin" placeholder="https://linkedin.com/in/seu-perfil" /></label>
-        <label>Telefone <input name="phone" autocomplete="tel" placeholder="11999998888" /></label>
-        <label>País de origem <input name="country" value="BR" maxlength="2" autocapitalize="characters" /></label>
-        <label>Cidade <input name="city" autocomplete="address-level2" placeholder="São Paulo" /></label>
-        <label>Currículo <input name="resume" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" /></label>
-        <p id="resume-name"></p>
-        <button id="resume-clear" type="button" hidden>Tirar currículo</button>
-        <label>Pretensão salarial <input name="salary" inputmode="decimal" placeholder="R$ 15.000,00" /></label>
-        <fieldset>
-          <legend>Tipo de contrato</legend>
-          <label><input type="radio" name="contractType" value="CLT" /> CLT</label>
-          <label><input type="radio" name="contractType" value="PJ" /> PJ</label>
-        </fieldset>
-        <fieldset>
-          <legend>Diversidade</legend>
-          <label><input type="checkbox" name="diversityBlack" /> Pessoa preta</label>
-          <label><input type="checkbox" name="diversityBrown" /> Pessoa parda</label>
-          <label><input type="checkbox" name="diversityIndigenous" /> Indígena</label>
-          <label><input type="checkbox" name="diversityWoman" /> Mulher</label>
-          <label><input type="checkbox" name="diversityDisability" /> Pessoa com deficiência</label>
-          <label><input type="checkbox" name="diversityLgbt" /> LGBTI+</label>
-          <label><input type="checkbox" name="diversityNone" /> Não pertenço a nenhum grupo</label>
-          <label><input type="checkbox" name="diversitySkip" /> Prefiro não responder</label>
-        </fieldset>
-        <fieldset>
-          <legend>Candidatura como pessoa com deficiência</legend>
-          <label><input type="radio" name="diversityApply" value="yes" /> Sim</label>
-          <label><input type="radio" name="diversityApply" value="no" /> Não</label>
-        </fieldset>
+        <div class="tabs" role="tablist">
+          <button type="button" id="tab-information" role="tab" aria-selected="true" aria-controls="panel-information">1. Informações</button>
+          <button type="button" id="tab-diversity" role="tab" aria-selected="false" aria-controls="panel-diversity">2. Diversidade</button>
+        </div>
+        <div id="panel-information" role="tabpanel" aria-labelledby="tab-information">
+          <label>Nome completo <input name="name" autocomplete="name" /></label>
+          <label>CPF <input name="cpf" inputmode="numeric" placeholder="000.000.000-00" maxlength="14" /></label>
+          <label class="check"><input type="checkbox" name="notBrazilian" /> Não sou brasileiro</label>
+          <div id="document-extra" hidden>
+            <label>País do documento <input name="documentCountry" maxlength="2" autocapitalize="characters" placeholder="AR" /></label>
+            <label>Documento de identificação <input name="documentId" /></label>
+          </div>
+          <label>E-mail <input name="email" type="email" autocomplete="email" /></label>
+          <label>LinkedIn <input name="linkedin" placeholder="https://linkedin.com/in/seu-perfil" /></label>
+          <label>Telefone <input name="phone" autocomplete="tel" placeholder="11999998888" /></label>
+          <label>País de origem <input name="country" value="BR" maxlength="2" autocapitalize="characters" /></label>
+          <label>Cidade <input name="city" autocomplete="address-level2" placeholder="São Paulo" /></label>
+          <fieldset>
+            <legend>Disponibilidade para o modelo da vaga</legend>
+            <p class="hint">Sim ou não, quando a vaga perguntar. Por exemplo, o híbrido.</p>
+            <label><input type="radio" name="workModel" value="yes" /> Sim</label>
+            <label><input type="radio" name="workModel" value="no" /> Não</label>
+          </fieldset>
+          <label>Currículo <input name="resume" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" /></label>
+          <p id="resume-name"></p>
+          <button id="resume-clear" type="button" hidden>Tirar currículo</button>
+          <label>Pretensão salarial <input name="salary" inputmode="decimal" placeholder="R$ 15.000,00" /></label>
+          <fieldset>
+            <legend>Tipo de contrato</legend>
+            <label><input type="radio" name="contractType" value="CLT" /> CLT</label>
+            <label><input type="radio" name="contractType" value="PJ" /> PJ</label>
+          </fieldset>
+          <fieldset>
+            <legend>Indicação</legend>
+            <p class="hint">A vaga já abre em não. O e-mail só entra se for sim.</p>
+            <label><input type="radio" name="indication" value="no" /> Não</label>
+            <label><input type="radio" name="indication" value="yes" /> Sim</label>
+            <div id="referral-email" hidden>
+              <label>E-mail de quem indicou <input name="referralEmail" type="email" placeholder="quem-me-indicou@empresa.com" /></label>
+            </div>
+          </fieldset>
+        </div>
+        <div id="panel-diversity" role="tabpanel" aria-labelledby="tab-diversity" hidden>
+          <fieldset>
+            <legend>Grupos</legend>
+            <label><input type="checkbox" name="diversityBlack" /> Pessoa preta</label>
+            <label><input type="checkbox" name="diversityBrown" /> Pessoa parda</label>
+            <label><input type="checkbox" name="diversityIndigenous" /> Indígena</label>
+            <label><input type="checkbox" name="diversityWoman" /> Mulher</label>
+            <label><input type="checkbox" name="diversityDisability" /> Pessoa com deficiência</label>
+            <label><input type="checkbox" name="diversityLgbt" /> LGBTI+</label>
+            <label><input type="checkbox" name="diversityNone" /> Não pertenço a nenhum grupo</label>
+            <label><input type="checkbox" name="diversitySkip" /> Prefiro não responder</label>
+          </fieldset>
+          <label>Identidade de gênero
+            <select name="genderIdentity">
+              <option value="">Selecione</option>
+              <option value="cis-man">Homem cisgênero</option>
+              <option value="cis-woman">Mulher cisgênero</option>
+              <option value="trans-man">Homem transgênero</option>
+              <option value="trans-woman">Mulher transgênero</option>
+              <option value="non-binary">Não binário</option>
+              <option value="agender">Agênero</option>
+              <option value="fluid">Gênero fluido</option>
+              <option value="skip">Prefiro não responder</option>
+            </select>
+          </label>
+          <label>Orientação sexual
+            <select name="sexualOrientation">
+              <option value="">Selecione</option>
+              <option value="homosexual">Homossexual</option>
+              <option value="heterosexual">Heterossexual</option>
+              <option value="bisexual">Bissexual</option>
+              <option value="pansexual">Pansexual</option>
+              <option value="asexual">Assexual</option>
+              <option value="other">Outro</option>
+              <option value="skip">Prefiro não responder</option>
+            </select>
+          </label>
+          <label>Cor ou raça
+            <select name="colourAndEthnicity">
+              <option value="">Selecione</option>
+              <option value="yellow">Amarela</option>
+              <option value="indigenous">Indígena</option>
+              <option value="white">Branca</option>
+              <option value="brown">Parda</option>
+              <option value="black">Preta</option>
+              <option value="skip">Prefiro não responder</option>
+            </select>
+          </label>
+          <fieldset>
+            <legend>Candidatura como pessoa com deficiência</legend>
+            <label><input type="radio" name="diversityApply" value="yes" /> Sim</label>
+            <label><input type="radio" name="diversityApply" value="no" /> Não</label>
+          </fieldset>
+        </div>
         <label class="consent">
           <input name="consent" type="checkbox" required />
           <span>Salvo neste Chrome, só para preencher as etapas Information e Diversity no InHire. Nada disso é enviado a um servidor.</span>

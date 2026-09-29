@@ -26,6 +26,34 @@ form {
   margin-top: 20px;
 }
 
+.tabs {
+  display: flex;
+  gap: 20px;
+  border-bottom: 1px solid #c5d5d1;
+}
+
+.tabs button {
+  background: transparent;
+  color: #5d726e;
+  border-radius: 0;
+  padding: 8px 0 10px;
+  border-bottom: 2px solid transparent;
+}
+
+.tabs button[aria-selected="true"] {
+  color: #0f766e;
+  border-bottom-color: #0f766e;
+}
+
+[role="tabpanel"] {
+  display: grid;
+  gap: 12px;
+}
+
+[hidden] {
+  display: none;
+}
+
 label {
   display: grid;
   gap: 4px;
@@ -34,11 +62,15 @@ label {
 
 input[type="text"],
 input[type="email"],
-input:not([type]) {
+input:not([type]),
+select {
+  width: 100%;
+  box-sizing: border-box;
   border: 1px solid #c5d5d1;
   border-radius: 8px;
   padding: 8px 10px;
   font: inherit;
+  background: #fff;
 }
 
 fieldset {
@@ -73,6 +105,24 @@ button {
   background: #fff;
   color: #0f766e;
   border: 1px solid #0f766e;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hint {
+  margin: 0 0 4px;
+  color: #5d726e;
+  font-size: 13px;
+}
+
+#document-extra:not([hidden]),
+#referral-email:not([hidden]) {
+  display: grid;
+  gap: 12px;
 }
 
 .consent {

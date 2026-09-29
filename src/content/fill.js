@@ -183,6 +183,119 @@ function fillContract(value) {
   return radio.checked ? "filled" : "missing";
 }
 
+function fillYesNo(name, value) {
+  const answer = (value || "").trim();
+  if (!answer) return "skip";
+  const radioValue = answer === "yes" ? "true" : "false";
+  const radio = document.querySelector(`input[name="${name}"][value="${radioValue}"]`);
+  if (!radio) return "missing";
+  if (!radio.checked) radio.click();
+  return radio.checked ? "filled" : "missing";
+}
+
+async function waitFor(read) {
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    const found = read();
+    if (found) return found;
+    await wait(100);
+  }
+  return null;
+}
+
+async function fillDocument(profile) {
+  const notBrazilian = profile.notBrazilian === "on";
+  const box = document.querySelector("input[name='isNotBrazilian']");
+  if (!notBrazilian || !box) {
+    if (box?.checked) {
+      box.click();
+      await waitFor(() => {
+        const cpf = document.querySelector("input[name='document.value']");
+        return cpf && !cpf.disabled ? cpf : null;
+      });
+    }
+    return {
+      notBrazilian: notBrazilian ? "missing" : "skip",
+      cpf: fillText("input[name='document.value']", formatCpf(profile.cpf)),
+      documentCountry: "skip",
+      documentId: "skip"
+    };
+  }
+  if (!box.checked) box.click();
+  await waitFor(() => {
+    const id = document.querySelector("input[name='document.value']");
+    const placeholder = (id?.placeholder || "").toLowerCase();
+    return id && !id.disabled && !placeholder.includes("000") ? id : null;
+  });
+  return {
+    notBrazilian: box.checked ? "filled" : "missing",
+    cpf: "skip",
+    documentCountry: await selectDropdown("document.country", { code: (profile.documentCountry || "").trim().toUpperCase() }),
+    documentId: fillText("input[name='document.value']", profile.documentId)
+  };
+}
+
+async function fillIndication(profile) {
+  const answer = (profile.indication || "").trim();
+  if (!answer) return "skip";
+  const marked = fillYesNo("isIndication", answer);
+  if (answer !== "yes" || marked !== "filled") return marked;
+  const email = (profile.referralEmail || "").trim();
+  if (!email) return "filled";
+  const input = await waitFor(() => document.querySelector("input[name='referralEmail']"));
+  if (!input) return "missing";
+  setInputValue(input, email);
+  return input.value ? "filled" : "missing";
+}
+
+const DIVERSITY_CHOICES = {
+  genderIdentity: {
+    field: "questionsDiversity.genderIdentity",
+    options: {
+      "cis-man": ["Cisgender man", "Homem Cisgênero", "Homem Cisgénero", "Hombre cisgénero"],
+      "cis-woman": ["Cisgender woman", "Mulher Cisgênero", "Mulher Cisgénero", "Mujer cisgénero"],
+      "trans-man": ["Transgender man", "Homem Transgênero", "Homem Transgénero", "Hombre transgénero"],
+      "trans-woman": ["Transgender woman", "Mulher Transgênero", "Mulher Transgénero", "Mujer transgénero"],
+      "non-binary": ["Non-binary", "Não binário", "Nao binario", "No binario"],
+      agender: ["Agender", "Agênero", "Agénero"],
+      fluid: ["Fluid gender", "Gênero fluido", "Género fluido"],
+      skip: ["I'd rather not answer", "Prefiro não responder", "Prefiero no responder"]
+    }
+  },
+  sexualOrientation: {
+    field: "questionsDiversity.sexualOrientation",
+    options: {
+      homosexual: ["Homosexual", "Homossexual"],
+      heterosexual: ["Heterosexual", "Heterossexual"],
+      bisexual: ["Bisexual", "Bissexual"],
+      pansexual: ["Pansexual"],
+      asexual: ["Asexual", "Assexual"],
+      other: ["Other", "Outro", "Otro"],
+      skip: ["I'd rather not answer", "Prefiro não responder", "Prefiero no responder"]
+    }
+  },
+  colourAndEthnicity: {
+    field: "questionsDiversity.colourAndEthnicity",
+    options: {
+      yellow: ["Yellow", "Amarela", "Amarilla"],
+      indigenous: ["Indigenous", "Indígena", "Indigena"],
+      white: ["White", "Branca", "Blanca"],
+      brown: ["Brown", "Parda"],
+      black: ["Black", "Preta", "Negra"],
+      skip: ["I'd rather not answer", "Prefiro não responder", "Prefiero no responder"]
+    }
+  }
+};
+
+async function fillChoice(key, profile) {
+  const choice = DIVERSITY_CHOICES[key];
+  const selected = (profile[key] || "").trim();
+  if (!selected) return "skip";
+  const labels = choice.options[selected];
+  if (!labels) return "skip";
+  if (!document.querySelector(`input[name="${choice.field}"]`)) return "missing";
+  return selectDropdown(choice.field, { labels });
+}
+
 async function fillCountry(code) {
   const wanted = (code || "BR").trim().toUpperCase();
   if (!wanted) return "skip";
@@ -256,18 +369,24 @@ async function fillDiversityApply(value) {
 
 async function fillInformation(profile) {
   const marks = diversityMarks(profile);
+  const documentFields = await fillDocument(profile);
   const results = {
     name: fillText("#name", profile.name),
-    cpf: fillText("input[name='document.value']", formatCpf(profile.cpf)),
+    ...documentFields,
     email: fillText("#email", profile.email),
     linkedin: fillText("#linkedinUsername", profile.linkedin),
     phone: fillText("#phone", profile.phone),
     country: await fillCountry(profile.country),
     city: await fillCity(profile.city),
+    workModel: fillYesNo("workModel", profile.workModel),
     resume: await fillResume(profile),
     salary: fillText("#salaryExpectation", formatSalary(profile.salary)),
     contractType: fillContract(profile.contractType),
+    indication: await fillIndication(profile),
     diversity: marks.length ? fillDiversityGroups(marks) : "skip",
+    genderIdentity: await fillChoice("genderIdentity", profile),
+    sexualOrientation: await fillChoice("sexualOrientation", profile),
+    colourAndEthnicity: await fillChoice("colourAndEthnicity", profile),
     diversityApply: await fillDiversityApply(profile.diversityApply)
   };
   document.body.click();

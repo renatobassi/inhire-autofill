@@ -10,7 +10,7 @@ A candidatura em `*.inhire.app` repete a etapa Information em todas as vagas. O 
 
 ## Escopo
 
-Entra: nome, CPF, e-mail, LinkedIn, telefone, país de origem, cidade, currículo, pretensão salarial e tipo de contrato (CLT ou PJ). Na Diversity, entram os grupos marcados e se a candidatura é como pessoa com deficiência.
+Entra: nome, CPF, e-mail, LinkedIn, telefone, país de origem, cidade, currículo, pretensão salarial e tipo de contrato (CLT ou PJ). O cadastro separa isso em Informações e Diversidade, como a vaga. Quem não é brasileiro marca isso, informa o país do documento e o documento de identificação, e o CPF só entra se a vaga deixar o campo ativo. A disponibilidade para o modelo da vaga entra como sim ou não quando a vaga pergunta. A indicação entra como não, ou como sim com o e-mail de quem indicou. Na Diversity, entram os grupos marcados, a identidade de gênero, a orientação sexual, a cor ou raça e se a candidatura é como pessoa com deficiência.
 
 Há dois disparos, para comparar: botão flutuante na página e botão no popup.
 
@@ -91,6 +91,7 @@ O V0 foi definido e implementado em 24 e 25 de setembro de 2026. O detalhe está
 | 2026-09-24 | O perfil só é salvo com a confirmação de que fica neste Chrome. A política pública fica em `privacy.html`. |
 | 2026-09-25 | País de origem volta ao perfil. Só é preenchido se a vaga deixar o campo vazio. O aviso mostra só a quantidade. |
 | 2026-09-25 | Diversity entra no perfil. O aceite da privacidade e o envio continuam de fora. |
+| 2026-09-29 | O cadastro fica em duas abas. Entram não brasileiro, modelo da vaga, indicação, identidade de gênero, orientação sexual e cor ou raça. O aceite da privacidade continua de fora. |
 
 ## Histórico
 
@@ -107,3 +108,4 @@ O V0 foi definido e implementado em 24 e 25 de setembro de 2026. O detalhe está
 | 2026-09-25 | A cidade do Brasil é escolhida na lista que abre depois do país. |
 | 2026-09-25 | O currículo salvo é entregue ao anexo da própria página. |
 | 2026-09-25 | PRD reorganizado no formato de propósito, escopo, stakeholders, casos de uso, requisitos, fluxo, liberação e métricas. |
+| 2026-09-29 | Cadastro em Informações e Diversidade. Preenchimento de não brasileiro, modelo da vaga, indicação e das três listas novas da Diversity. |
