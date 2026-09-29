@@ -17,11 +17,16 @@ function setInputValue(input, value) {
   input.dispatchEvent(new Event("change", { bubbles: true }));
 }
 
+function optionLabel(item) {
+  return typeof item?.label === "string" ? item.label : "";
+}
+
 function readOptions(dropdown) {
   const key = Object.keys(dropdown).find((name) => name.startsWith("__reactFiber"));
   let fiber = key ? dropdown[key] : null;
-  for (let index = 0; fiber && index < 15; index += 1) {
-    const options = fiber.memoizedProps?.options;
+  for (let index = 0; fiber && index < 25; index += 1) {
+    const props = fiber.memoizedProps || {};
+    const options = props.options || props.dropdownOptions?.options;
     if (Array.isArray(options) && options.length) return options;
     fiber = fiber.return;
   }
@@ -36,13 +41,42 @@ function findOption(options, { code, label, labels }) {
   }
   const queries = (labels || [label]).map((item) => (item || "").trim().toLowerCase()).filter(Boolean);
   for (const query of queries) {
-    const matches = options.filter((item) => String(item.label).toLowerCase().startsWith(query));
-    matches.sort((left, right) => String(left.label).length - String(right.label).length);
+    const matches = options.filter((item) => optionLabel(item).toLowerCase().startsWith(query));
+    matches.sort((left, right) => optionLabel(left).length - optionLabel(right).length);
     if (matches[0]) return matches[0];
   }
   const query = (label || "").trim().toLowerCase();
   if (!query || labels) return null;
-  return options.find((item) => String(item.label).toLowerCase().includes(query)) || null;
+  return options.find((item) => optionLabel(item).toLowerCase().includes(query)) || null;
+}
+
+function visible(el) {
+  return el.getClientRects().length > 0;
+}
+
+function buttonLines(item) {
+  return [item.innerText, item.getAttribute("aria-label") || ""]
+    .flatMap((text) => text.split("\n"))
+    .map((line) => line.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+function matchButton(buttons, { code, option, queries }) {
+  if (option) {
+    const byValue = buttons.find((item) => (item.getAttribute("data-option-value") || "") === String(option.value));
+    if (byValue) return byValue;
+  }
+  if (code) {
+    const byCode = buttons.find((item) => (item.getAttribute("data-option-value") || "").toUpperCase() === code.toUpperCase());
+    if (byCode) return byCode;
+  }
+  for (const query of queries) {
+    const needle = query.toLowerCase();
+    const matches = buttons.filter((item) => buttonLines(item).some((line) => line.startsWith(needle)));
+    matches.sort((left, right) => left.innerText.length - right.innerText.length);
+    if (matches[0]) return matches[0];
+  }
+  return null;
 }
 
 async function selectDropdown(fieldName, wanted) {
@@ -56,6 +90,9 @@ async function selectDropdown(fieldName, wanted) {
 
   document.body.click();
   await wait(150);
+  const openBefore = new Set(
+    [...document.querySelectorAll("[data-component-name='DropdownOptions']")].filter(visible)
+  );
   dropdown.dispatchEvent(new FocusEvent("focusin", { bubbles: true }));
   dropdown.click();
 
@@ -66,30 +103,27 @@ async function selectDropdown(fieldName, wanted) {
   }
 
   const option = findOption(options, { code, label, labels: wanted.labels });
-  const query = (label || String(option?.label || labels[0] || code)).split(" +")[0].trim();
-  let search = null;
-  for (let attempt = 0; attempt < 15 && !search; attempt += 1) {
-    const inputs = [...document.querySelectorAll("[data-component-name='DropdownOptionsSearch'] input")];
-    search = inputs.find((input) => input.getClientRects().length) || null;
-    if (!search) await wait(100);
+  const queries = [optionLabel(option), label, ...labels]
+    .map((item) => (item || "").trim())
+    .filter((item, index, all) => item && all.indexOf(item) === index);
+  const searchQuery = (optionLabel(option) || label || code).split(" +")[0].trim();
+  let menu = null;
+  for (let attempt = 0; attempt < 20 && !menu; attempt += 1) {
+    const menus = [...document.querySelectorAll("[data-component-name='DropdownOptions']")].filter(visible);
+    menu = menus.find((item) => !openBefore.has(item)) || null;
+    if (!menu) await wait(100);
   }
-  if (search && query) setInputValue(search, query);
+  const search = menu?.querySelector("[data-component-name='DropdownOptionsSearch'] input") || null;
+  if (search && searchQuery) {
+    setInputValue(search, searchQuery);
+    await wait(200);
+  }
 
   let button = null;
   for (let attempt = 0; attempt < 12 && !button; attempt += 1) {
-    await wait(150);
-    const buttons = [...document.querySelectorAll("[data-component-name='DropdownOption']")];
-    if (option) {
-      button = buttons.find((item) => (item.getAttribute("data-option-value") || "") === String(option.value)) || null;
-    }
-    if (!button && code) {
-      button = buttons.find((item) => (item.getAttribute("data-option-value") || "").toUpperCase() === code.toUpperCase()) || null;
-    }
-    if (!button && query) {
-      const matches = buttons.filter((item) => item.innerText.trim().toLowerCase().startsWith(query.toLowerCase()));
-      matches.sort((left, right) => left.innerText.length - right.innerText.length);
-      button = matches[0] || null;
-    }
+    const buttons = [...(menu || document).querySelectorAll("[data-component-name='DropdownOption']")].filter(visible);
+    button = matchButton(buttons, { code, option, queries });
+    if (!button) await wait(150);
   }
   if (!button) return "missing";
   button.click();

@@ -18,3 +18,4 @@ Pendência aberta bloqueia o merge na `main` quando o PR diz que vai resolvê-la
 - [x] Preencher a etapa Diversity com os grupos e a candidatura como pessoa com deficiência. (2026-09-25)
 - [x] Anexar de novo o currículo salvo no perfil. (2026-09-25)
 - [x] Separar o cadastro em Informações e Diversidade e preencher não brasileiro, modelo da vaga, indicação, identidade de gênero, orientação sexual e cor ou raça. (2026-09-29)
+- [x] Preencher a identidade de gênero no menu da própria pergunta. (2026-09-29)
