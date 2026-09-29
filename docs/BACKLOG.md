@@ -6,6 +6,7 @@ Pendência aberta bloqueia o merge na `main` quando o PR diz que vai resolvê-la
 
 - [ ] Conferir na vaga real se o botão flutuante e o popup preenchem as etapas Information e Diversity.
 - [ ] Publicar na Chrome Web Store. Falta hospedar `privacy.html` no site da Jeditech e enviar o item.
+- [ ] Fazer o site da extensão no Vercel `rdb2/inhire-autofill`, ligado ao GitHub `renatobassi/inhire-autofill` na `main`.
 
 ## Resolvido
 
