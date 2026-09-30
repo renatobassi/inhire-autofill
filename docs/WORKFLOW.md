@@ -13,6 +13,12 @@ Não há commit direto na `main`.
 
 O modelo do pull request está em `.github/pull_request_template.md`.
 
+## Feature nova
+
+Feature nova ou mudança de regra segue o processo [prd-feature](processes/prd-feature.md). O código só começa com `docs/features/<slug>.md` em **pronto para build**.
+
+Bugfix, ajuste de copy ou exploração não abrem PRD.
+
 ## Antes do PR para a main
 
 1. Atualizar `docs/PRD.md` se o comportamento mudou.
@@ -25,4 +31,4 @@ O item da Chrome Web Store ainda não está no ar. O print fica em `store/`. A p
 
 ## Tokens
 
-A fonte de produto é `docs/PRD.md` e `docs/BACKLOG.md`. Ler só os arquivos da tarefa. Não criar arquivo, dependência ou permissão sem requisito no PRD.
+O que já está aceito fica em `docs/PRD.md` e `docs/BACKLOG.md`. Feature nova passa antes por `docs/features/`. Ler só os arquivos da tarefa. Não criar arquivo, dependência ou permissão sem requisito no PRD da feature ou, no que já está em produção, em `docs/PRD.md`.

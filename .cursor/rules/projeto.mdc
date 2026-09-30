@@ -5,9 +5,11 @@ alwaysApply: true
 
 # Projeto
 
-Fonte de produto: `docs/PRD.md` e `docs/BACKLOG.md`. Não inventar escopo.
+Fonte do que já está aceito: `docs/PRD.md` e `docs/BACKLOG.md`. Não inventar escopo.
 
+- Feature nova ou mudança de regra de negócio: skill `prd-feature` (CRIA). Sem código até `docs/features/<slug>.md` estar **pronto para build**.
+- Bugfix, ajuste de copy ou exploração: sem PRD novo.
 - Trabalho novo ou correção: branch a partir da `main` (`feat/`, `fix/`, `docs/`, `chore/`). Sem commit direto na `main`.
-- No PR para a `main`: atualizar o PRD se o comportamento mudou; em `docs/BACKLOG.md`, fechar o que o PR resolve e não deixar pendência desta entrega aberta.
-- Ler só os arquivos da tarefa. Não criar arquivo, dependência ou permissão sem requisito no PRD.
+- No PR para a `main`: atualizar `docs/PRD.md` se o comportamento mudou; em `docs/BACKLOG.md`, fechar o que o PR resolve e não deixar pendência desta entrega aberta.
+- Ler só os arquivos da tarefa. Não criar arquivo, dependência ou permissão sem requisito no PRD da feature ou, no que já está em produção, em `docs/PRD.md`.
 - Diff e resposta curtos.
