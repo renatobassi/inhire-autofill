@@ -1,0 +1,48 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+  pull_request:
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validar manifest.json
+        run: |
+          node -e '
+            const fs = require("fs");
+            const m = JSON.parse(fs.readFileSync("manifest.json", "utf8"));
+            if (m.manifest_version !== 3) {
+              console.error("manifest_version esperado: 3");
+              process.exit(1);
+            }
+            for (const key of ["name", "version"]) {
+              if (!m[key]) {
+                console.error("campo obrigatório ausente: " + key);
+                process.exit(1);
+              }
+            }
+            console.log("ok " + m.name + " " + m.version);
+          '
+
+      - name: Checar sintaxe dos .js
+        run: find . -name '*.js' -not -path './.git/*' -not -path './node_modules/*' -print0 | xargs -0 -r -n1 node --check
